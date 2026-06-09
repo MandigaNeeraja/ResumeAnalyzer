@@ -69,6 +69,7 @@ namespace ResumeAnalyzer.Services
             return new LoginResponseDto
             {
                 Token = token,
+                Name = user.Name,
                 Email = user.Email,
                 Role = user.Role
             };

@@ -9,5 +9,9 @@ namespace ResumeAnalyzer.Interfaces
         Task<List<JobResponseDto>> GetJobsAsync();
 
         Task<JobResponseDto?> GetJobByIdAsync(int id);
+
+        Task<JobResponseDto?> UpdateJobAsync(int id, UpdateJobDto dto);
+
+        Task<bool> DeleteJobAsync(int id);
     }
 }

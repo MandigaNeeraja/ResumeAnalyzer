@@ -8,31 +8,40 @@ using ResumeAnalyzer.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
 builder.Services.AddControllers();
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-//Authservice dependency injection REGISTERING 
 builder.Services.AddScoped<IAuthService, AuthService>();
-
 builder.Services.AddScoped<IJobService, JobService>();
-
 builder.Services.AddScoped<IResumeService, ResumeService>();
-
+builder.Services.AddScoped<IMatchService, MatchService>();
+builder.Services.AddScoped<ICandidateService, CandidateService>();
+builder.Services.AddScoped<IDashboardService, DashboardService>();
+builder.Services.AddScoped<IAnalyticsService, AnalyticsService>();
+builder.Services.AddScoped<ISettingsService, SettingsService>();
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<CandidateParserService>();
-
 builder.Services.AddScoped<SkillExtractionService>();
-
 builder.Services.AddScoped<PdfParserService>();
-
 builder.Services.AddScoped<DocxParserService>();
 
-//builder.Services.AddHttpClient<IOpenAIService, OpenAIService>();
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowFrontend", policy =>
+    {
+        policy
+            .WithOrigins(
+                "http://localhost:5173",
+                "http://localhost:5174",
+                "http://127.0.0.1:5173")
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
+
 builder.Services.AddAuthentication(
     JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
@@ -62,11 +71,12 @@ builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
 }
+
+app.UseCors("AllowFrontend");
 
 app.UseHttpsRedirection();
 

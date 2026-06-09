@@ -43,7 +43,19 @@
             "GitHub",
             "HTML",
             "CSS",
-            "Tailwind"
+            "Tailwind",
+            "Entity Framework",
+            "Redux",
+            "Selenium",
+            "Jest",
+            "Cypress",
+            "Power BI",
+            "Excel",
+            "CI/CD",
+            "API Testing",
+            "REST API",
+            "GraphQL",
+            "Microservices"
         ];
 
         public List<string> ExtractSkills(string text)

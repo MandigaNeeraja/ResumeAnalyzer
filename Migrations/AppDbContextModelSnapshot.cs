@@ -123,6 +123,10 @@ namespace ResumeAnalyzer.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Experience")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -200,7 +204,20 @@ namespace ResumeAnalyzer.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("EmailNewResumes")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("MinMatchScore")
+                        .HasColumnType("int");
+
                     b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("NotifyMatchComplete")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Organization")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -211,6 +228,9 @@ namespace ResumeAnalyzer.Migrations
                     b.Property<string>("Role")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("WeeklyAnalyticsReport")
+                        .HasColumnType("bit");
 
                     b.HasKey("UserId");
 
