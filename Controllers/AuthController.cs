@@ -5,41 +5,30 @@ using ResumeAnalyzer.Interfaces;
 namespace ResumeAnalyzer.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/auth")]
     public class AuthController : ControllerBase
     {
         private readonly IAuthService _authService;
 
-        public AuthController(
-            IAuthService authService)
+        public AuthController(IAuthService authService)
         {
             _authService = authService;
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult>
-            Register(RegisterDto dto)
+        public async Task<IActionResult> Register(RegisterDto dto)
         {
-            var result =
-                await _authService
-                .RegisterAsync(dto);
-
+            var result = await _authService.RegisterAsync(dto);
             return Ok(result);
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult>
-            Login(LoginDto dto)
+        public async Task<IActionResult> Login(LoginDto dto)
         {
-            var result =
-                await _authService
-                .LoginAsync(dto);
+            var result = await _authService.LoginAsync(dto);
 
             if (result == null)
-            {
-                return Unauthorized(
-                    "Invalid email or password");
-            }
+                return Unauthorized("Invalid email or password");
 
             return Ok(result);
         }

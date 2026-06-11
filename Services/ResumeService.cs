@@ -1,9 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using ResumeAnalyzer.Data;
 using ResumeAnalyzer.DTOs.Resume;
 using ResumeAnalyzer.Enums;
+using ResumeAnalyzer.Helpers;
 using ResumeAnalyzer.Interfaces;
 using ResumeAnalyzer.Models;
+using System.Security.Claims;
 
 namespace ResumeAnalyzer.Services
 {
@@ -15,6 +17,7 @@ namespace ResumeAnalyzer.Services
         private readonly CandidateParserService _candidateParser;
         private readonly SkillExtractionService _skillExtractor;
         private readonly IMatchService _matchService;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
         public ResumeService(
             AppDbContext context,
@@ -22,7 +25,8 @@ namespace ResumeAnalyzer.Services
             DocxParserService docxParser,
             CandidateParserService candidateParser,
             SkillExtractionService skillExtractor,
-            IMatchService matchService)
+            IMatchService matchService,
+            IHttpContextAccessor httpContextAccessor)
         {
             _context = context;
             _pdfParser = pdfParser;
@@ -30,10 +34,20 @@ namespace ResumeAnalyzer.Services
             _candidateParser = candidateParser;
             _skillExtractor = skillExtractor;
             _matchService = matchService;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public async Task<ResumeResponseDto> UploadResumeAsync(ResumeUploadDto dto)
         {
+            if (dto.JobId > 0)
+            {
+                var job = await _context.Jobs.FindAsync(dto.JobId);
+                if (job == null)
+                    throw new InvalidOperationException("Job not found");
+                if (job.Status == JobStatus.Closed)
+                    throw new InvalidOperationException("Cannot upload resumes to a closed job");
+            }
+
             var uploadsFolder = Path.Combine(
                 Directory.GetCurrentDirectory(),
                 "Uploads");
@@ -80,6 +94,8 @@ namespace ResumeAnalyzer.Services
 
             var candidate = new Candidate
             {
+                JobId = dto.JobId > 0 ? dto.JobId : null,
+
                 FullName = _candidateParser.ExtractName(
                     extractedText,
                     dto.ResumeFile.FileName),
@@ -92,13 +108,17 @@ namespace ResumeAnalyzer.Services
                     ? _candidateParser.ExtractPhone(extractedText)
                     : "",
 
+                LinkedIn = parseStatus == "Parsed"
+                    ? _candidateParser.ExtractLinkedIn(extractedText)
+                    : null,
+
                 ExperienceYears = parseStatus == "Parsed"
                     ? _candidateParser.ExtractExperienceYears(extractedText)
                     : null,
 
                 Status = parseStatus == "Parsed"
-                    ? CandidateStatus.Parsed
-                    : CandidateStatus.Uploaded,
+                    ? CandidateStatus.Applied
+                    : CandidateStatus.Applied,
 
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow
@@ -106,6 +126,9 @@ namespace ResumeAnalyzer.Services
 
             if (string.IsNullOrWhiteSpace(candidate.Email))
                 candidate.Email = null;
+
+            if (string.IsNullOrWhiteSpace(candidate.LinkedIn))
+                candidate.LinkedIn = null;
 
             _context.Candidates.Add(candidate);
             await _context.SaveChangesAsync();
@@ -154,6 +177,7 @@ namespace ResumeAnalyzer.Services
                 Name = candidate.FullName,
                 Email = candidate.Email ?? "",
                 Phone = candidate.Phone,
+                LinkedIn = candidate.LinkedIn,
                 Skills = skills,
                 ParseStatus = resume.ParseStatus,
                 FileName = resume.FileName,
@@ -172,7 +196,33 @@ namespace ResumeAnalyzer.Services
                 response.MatchStatus = match.Status;
             }
 
+            if (dto.JobId > 0)
+            {
+                var userId = await GetCurrentUserIdAsync();
+                await JobActivityHelper.LogAsync(
+                    _context,
+                    dto.JobId,
+                    JobActivityType.ResumeUploaded,
+                    $"Resume uploaded for {candidate.FullName}.",
+                    userId,
+                    candidate.CandidateId);
+            }
+
             return response;
+        }
+
+        private async Task<int?> GetCurrentUserIdAsync()
+        {
+            var email = _httpContextAccessor.HttpContext?.User
+                .FindFirst(ClaimTypes.Email)?.Value;
+
+            if (string.IsNullOrEmpty(email))
+                return null;
+
+            var user = await _context.Users
+                .FirstOrDefaultAsync(u => u.Email == email);
+
+            return user?.UserId;
         }
 
         public async Task<List<ResumeResponseDto>> GetResumesByJobAsync(int jobId)
@@ -193,6 +243,14 @@ namespace ResumeAnalyzer.Services
 
             foreach (var resume in resumes)
             {
+                if (resume.Candidate != null)
+                {
+                    var role = _httpContextAccessor.HttpContext?.User
+                        .FindFirst(ClaimTypes.Role)?.Value;
+                    if (!CandidateVisibilityHelper.CanAccessCandidate(role, resume.Candidate.Status))
+                        continue;
+                }
+
                 var match = await _matchService.GetMatchAsync(
                     resume.CandidateId!.Value,
                     jobId);

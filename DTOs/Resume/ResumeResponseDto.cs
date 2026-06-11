@@ -14,6 +14,8 @@
 
         public string Phone { get; set; } = string.Empty;
 
+        public string? LinkedIn { get; set; }
+
         public List<string> Skills { get; set; } = new();
 
         public string ParseStatus { get; set; } = string.Empty;

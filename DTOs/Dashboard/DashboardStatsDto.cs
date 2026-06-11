@@ -31,6 +31,8 @@ namespace ResumeAnalyzer.DTOs.Dashboard
 
     public class NotificationDto
     {
+        public string Id { get; set; } = string.Empty;
+
         public string Message { get; set; } = string.Empty;
 
         public string Detail { get; set; } = string.Empty;
@@ -38,6 +40,8 @@ namespace ResumeAnalyzer.DTOs.Dashboard
         public DateTime OccurredAt { get; set; }
 
         public string Type { get; set; } = string.Empty;
+
+        public string? Link { get; set; }
     }
 
     public class NotificationsResponseDto

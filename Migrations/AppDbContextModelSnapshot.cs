@@ -30,6 +30,9 @@ namespace ResumeAnalyzer.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CandidateId"));
 
+                    b.Property<double?>("ATSScore")
+                        .HasColumnType("float");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
@@ -49,6 +52,21 @@ namespace ResumeAnalyzer.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("HRRemarks")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("JobId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("LinkedIn")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ManagerAvailability")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ManagerRemarks")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Phone")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -60,6 +78,8 @@ namespace ResumeAnalyzer.Migrations
                         .HasColumnType("datetime2");
 
                     b.HasKey("CandidateId");
+
+                    b.HasIndex("JobId");
 
                     b.ToTable("Candidates");
                 });
@@ -86,6 +106,10 @@ namespace ResumeAnalyzer.Migrations
 
                     b.HasKey("CandidateJobMatchId");
 
+                    b.HasIndex("CandidateId");
+
+                    b.HasIndex("JobId");
+
                     b.ToTable("CandidateJobMatches");
                 });
 
@@ -108,6 +132,101 @@ namespace ResumeAnalyzer.Migrations
                     b.ToTable("CandidateSkills");
                 });
 
+            modelBuilder.Entity("ResumeAnalyzer.Models.Interview", b =>
+                {
+                    b.Property<int>("InterviewId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("InterviewId"));
+
+                    b.Property<int>("CandidateId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("InterviewDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<TimeSpan>("InterviewTime")
+                        .HasColumnType("time");
+
+                    b.Property<int>("InterviewType")
+                        .HasColumnType("int");
+
+                    b.Property<int>("JobId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("MeetingLink")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("ScheduledBy")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.HasKey("InterviewId");
+
+                    b.HasIndex("CandidateId");
+
+                    b.HasIndex("JobId");
+
+                    b.HasIndex("ScheduledBy");
+
+                    b.ToTable("Interviews");
+                });
+
+            modelBuilder.Entity("ResumeAnalyzer.Models.InterviewFeedback", b =>
+                {
+                    b.Property<int>("FeedbackId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("FeedbackId"));
+
+                    b.Property<int>("CandidateId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Comments")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("CommunicationRating")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("Decision")
+                        .HasColumnType("int");
+
+                    b.Property<int>("InterviewId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ManagerId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProblemSolvingRating")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TechnicalKnowledgeRating")
+                        .HasColumnType("int");
+
+                    b.HasKey("FeedbackId");
+
+                    b.HasIndex("CandidateId");
+
+                    b.HasIndex("InterviewId")
+                        .IsUnique();
+
+                    b.HasIndex("ManagerId");
+
+                    b.ToTable("InterviewFeedbacks");
+                });
+
             modelBuilder.Entity("ResumeAnalyzer.Models.Job", b =>
                 {
                     b.Property<int>("JobId")
@@ -119,7 +238,22 @@ namespace ResumeAnalyzer.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<int?>("CreatedBy")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Department")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Designation")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("EmploymentType")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -127,13 +261,64 @@ namespace ResumeAnalyzer.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Location")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
                     b.HasKey("JobId");
 
+                    b.HasIndex("CreatedBy");
+
                     b.ToTable("Jobs");
+                });
+
+            modelBuilder.Entity("ResumeAnalyzer.Models.JobActivityLog", b =>
+                {
+                    b.Property<int>("JobActivityLogId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("JobActivityLogId"));
+
+                    b.Property<int>("ActivityType")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("JobId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("PerformedBy")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("RelatedCandidateId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("RelatedInterviewId")
+                        .HasColumnType("int");
+
+                    b.HasKey("JobActivityLogId");
+
+                    b.HasIndex("JobId");
+
+                    b.HasIndex("PerformedBy");
+
+                    b.ToTable("JobActivityLogs");
                 });
 
             modelBuilder.Entity("ResumeAnalyzer.Models.JobSkill", b =>
@@ -202,7 +387,7 @@ namespace ResumeAnalyzer.Migrations
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<bool>("EmailNewResumes")
                         .HasColumnType("bit");
@@ -234,6 +419,9 @@ namespace ResumeAnalyzer.Migrations
 
                     b.HasKey("UserId");
 
+                    b.HasIndex("Email")
+                        .IsUnique();
+
                     b.ToTable("Users");
                 });
 
@@ -254,6 +442,35 @@ namespace ResumeAnalyzer.Migrations
                     b.ToTable("Skills");
                 });
 
+            modelBuilder.Entity("ResumeAnalyzer.Models.Candidate", b =>
+                {
+                    b.HasOne("ResumeAnalyzer.Models.Job", "Job")
+                        .WithMany("Candidates")
+                        .HasForeignKey("JobId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("Job");
+                });
+
+            modelBuilder.Entity("ResumeAnalyzer.Models.CandidateJobMatch", b =>
+                {
+                    b.HasOne("ResumeAnalyzer.Models.Candidate", "Candidate")
+                        .WithMany()
+                        .HasForeignKey("CandidateId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ResumeAnalyzer.Models.Job", "Job")
+                        .WithMany()
+                        .HasForeignKey("JobId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Candidate");
+
+                    b.Navigation("Job");
+                });
+
             modelBuilder.Entity("ResumeAnalyzer.Models.CandidateSkill", b =>
                 {
                     b.HasOne("ResumeAnalyzer.Models.Candidate", "Candidate")
@@ -271,6 +488,87 @@ namespace ResumeAnalyzer.Migrations
                     b.Navigation("Candidate");
 
                     b.Navigation("Skill");
+                });
+
+            modelBuilder.Entity("ResumeAnalyzer.Models.Interview", b =>
+                {
+                    b.HasOne("ResumeAnalyzer.Models.Candidate", "Candidate")
+                        .WithMany("Interviews")
+                        .HasForeignKey("CandidateId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ResumeAnalyzer.Models.Job", "Job")
+                        .WithMany("Interviews")
+                        .HasForeignKey("JobId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("ResumeAnalyzer.Models.User", "Scheduler")
+                        .WithMany()
+                        .HasForeignKey("ScheduledBy")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("Candidate");
+
+                    b.Navigation("Job");
+
+                    b.Navigation("Scheduler");
+                });
+
+            modelBuilder.Entity("ResumeAnalyzer.Models.InterviewFeedback", b =>
+                {
+                    b.HasOne("ResumeAnalyzer.Models.Candidate", "Candidate")
+                        .WithMany("InterviewFeedbacks")
+                        .HasForeignKey("CandidateId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("ResumeAnalyzer.Models.Interview", "Interview")
+                        .WithOne("Feedback")
+                        .HasForeignKey("ResumeAnalyzer.Models.InterviewFeedback", "InterviewId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ResumeAnalyzer.Models.User", "Manager")
+                        .WithMany()
+                        .HasForeignKey("ManagerId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Candidate");
+
+                    b.Navigation("Interview");
+
+                    b.Navigation("Manager");
+                });
+
+            modelBuilder.Entity("ResumeAnalyzer.Models.Job", b =>
+                {
+                    b.HasOne("ResumeAnalyzer.Models.User", "Creator")
+                        .WithMany()
+                        .HasForeignKey("CreatedBy")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("Creator");
+                });
+
+            modelBuilder.Entity("ResumeAnalyzer.Models.JobActivityLog", b =>
+                {
+                    b.HasOne("ResumeAnalyzer.Models.Job", "Job")
+                        .WithMany("ActivityLogs")
+                        .HasForeignKey("JobId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ResumeAnalyzer.Models.User", "Performer")
+                        .WithMany()
+                        .HasForeignKey("PerformedBy")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("Job");
+
+                    b.Navigation("Performer");
                 });
 
             modelBuilder.Entity("ResumeAnalyzer.Models.JobSkill", b =>
@@ -305,11 +603,26 @@ namespace ResumeAnalyzer.Migrations
                 {
                     b.Navigation("CandidateSkills");
 
+                    b.Navigation("InterviewFeedbacks");
+
+                    b.Navigation("Interviews");
+
                     b.Navigation("Resume");
+                });
+
+            modelBuilder.Entity("ResumeAnalyzer.Models.Interview", b =>
+                {
+                    b.Navigation("Feedback");
                 });
 
             modelBuilder.Entity("ResumeAnalyzer.Models.Job", b =>
                 {
+                    b.Navigation("ActivityLogs");
+
+                    b.Navigation("Candidates");
+
+                    b.Navigation("Interviews");
+
                     b.Navigation("JobSkills");
                 });
 #pragma warning restore 612, 618

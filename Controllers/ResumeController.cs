@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using ResumeAnalyzer.Constants;
 using ResumeAnalyzer.DTOs.Resume;
 using ResumeAnalyzer.Interfaces;
 
@@ -7,7 +8,7 @@ namespace ResumeAnalyzer.Controllers
 {
     [Authorize]
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/resumes")]
     public class ResumeController : ControllerBase
     {
         private readonly IResumeService _resumeService;
@@ -18,6 +19,7 @@ namespace ResumeAnalyzer.Controllers
         }
 
         [HttpPost("upload")]
+        [Authorize(Roles = Roles.AdminOrHR)]
         public async Task<IActionResult> Upload([FromForm] ResumeUploadDto dto)
         {
             if (dto.ResumeFile == null || dto.ResumeFile.Length == 0)
@@ -34,6 +36,7 @@ namespace ResumeAnalyzer.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = Roles.AdminOrHR)]
         public async Task<IActionResult> Delete(int id)
         {
             var deleted = await _resumeService.DeleteResumeAsync(id);

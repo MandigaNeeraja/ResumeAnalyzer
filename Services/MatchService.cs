@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using ResumeAnalyzer.Constants;
 using ResumeAnalyzer.Data;
 using ResumeAnalyzer.DTOs.Match;
 using ResumeAnalyzer.Enums;
@@ -73,12 +74,11 @@ namespace ResumeAnalyzer.Services
                     });
             }
 
-            candidate.Status = status switch
-            {
-                "Shortlisted" => CandidateStatus.Shortlisted,
-                "Review" => CandidateStatus.OnHold,
-                _ => CandidateStatus.Parsed
-            };
+            candidate.JobId = jobId;
+            candidate.ATSScore = score;
+            candidate.Status = score >= 80
+                ? CandidateStatus.Shortlisted
+                : CandidateStatus.HRScreening;
             candidate.UpdatedAt = DateTime.UtcNow;
 
             await _context.SaveChangesAsync();
@@ -104,6 +104,9 @@ namespace ResumeAnalyzer.Services
                         c.CandidateId == match.CandidateId);
 
                 if (candidate == null)
+                    continue;
+
+                if (!CanCurrentUserAccessCandidate(candidate.Status))
                     continue;
 
                 var jobSkills = await GetJobSkillNamesAsync(jobId);
@@ -149,6 +152,9 @@ namespace ResumeAnalyzer.Services
             if (candidate == null)
                 return null;
 
+            if (!CanCurrentUserAccessCandidate(candidate.Status))
+                return null;
+
             var jobSkills = await GetJobSkillNamesAsync(jobId);
             var candidateSkills = candidate.CandidateSkills
                 .Select(cs => cs.Skill.SkillName)
@@ -167,6 +173,14 @@ namespace ResumeAnalyzer.Services
                 matchedSkills,
                 match.ATSScore,
                 status);
+        }
+
+        private bool CanCurrentUserAccessCandidate(CandidateStatus status)
+        {
+            var role = _httpContextAccessor.HttpContext?.User
+                .FindFirst(ClaimTypes.Role)?.Value;
+
+            return CandidateVisibilityHelper.CanAccessCandidate(role, status);
         }
 
         private async Task<int> GetMinMatchScoreAsync()
@@ -205,7 +219,8 @@ namespace ResumeAnalyzer.Services
                     : "N/A",
                 SkillsMatched = matchedSkills,
                 MatchScore = score,
-                Status = status
+                Status = status,
+                WorkflowStatus = candidate.Status.ToString()
             };
         }
     }

@@ -181,7 +181,6 @@ C:\Users\NM162673\source\repos\ResumeAnalMVC\ResumeAnalMVC\obj\Debug\net10.0\Res
 C:\Users\NM162673\source\repos\ResumeAnalMVC\ResumeAnalyzer\bin\Debug\net10.0\appsettings.Development.json
 C:\Users\NM162673\source\repos\ResumeAnalMVC\ResumeAnalyzer\bin\Debug\net10.0\appsettings.json
 C:\Users\NM162673\source\repos\ResumeAnalMVC\ResumeAnalyzer\bin\Debug\net10.0\ResumeAnalyzer.staticwebassets.endpoints.json
-C:\Users\NM162673\source\repos\ResumeAnalMVC\ResumeAnalyzer\bin\Debug\net10.0\ResumeAnalyzer.exe
 C:\Users\NM162673\source\repos\ResumeAnalMVC\ResumeAnalyzer\bin\Debug\net10.0\ResumeAnalyzer.deps.json
 C:\Users\NM162673\source\repos\ResumeAnalMVC\ResumeAnalyzer\bin\Debug\net10.0\ResumeAnalyzer.runtimeconfig.json
 C:\Users\NM162673\source\repos\ResumeAnalMVC\ResumeAnalyzer\bin\Debug\net10.0\ResumeAnalyzer.dll
@@ -358,3 +357,12 @@ C:\Users\NM162673\source\repos\ResumeAnalMVC\ResumeAnalyzer\obj\Debug\net10.0\re
 C:\Users\NM162673\source\repos\ResumeAnalMVC\ResumeAnalyzer\obj\Debug\net10.0\ResumeAnalyzer.pdb
 C:\Users\NM162673\source\repos\ResumeAnalMVC\ResumeAnalyzer\obj\Debug\net10.0\ResumeAnalyzer.genruntimeconfig.cache
 C:\Users\NM162673\source\repos\ResumeAnalMVC\ResumeAnalyzer\obj\Debug\net10.0\ref\ResumeAnalyzer.dll
+c:\Users\NM162673\source\repos\ResumeAnalMVC\_build_out\appsettings.Development.json
+c:\Users\NM162673\source\repos\ResumeAnalMVC\_build_out\appsettings.json
+c:\Users\NM162673\source\repos\ResumeAnalMVC\_build_out\ResumeAnalyzer.staticwebassets.endpoints.json
+c:\Users\NM162673\source\repos\ResumeAnalMVC\_build_out\ResumeAnalyzer.exe
+c:\Users\NM162673\source\repos\ResumeAnalMVC\_build_out\ResumeAnalyzer.deps.json
+c:\Users\NM162673\source\repos\ResumeAnalMVC\_build_out\ResumeAnalyzer.runtimeconfig.json
+c:\Users\NM162673\source\repos\ResumeAnalMVC\_build_out\ResumeAnalyzer.dll
+c:\Users\NM162673\source\repos\ResumeAnalMVC\_build_out\ResumeAnalyzer.pdb
+C:\Users\NM162673\source\repos\ResumeAnalMVC\ResumeAnalyzer\bin\Debug\net10.0\ResumeAnalyzer.exe

@@ -19,5 +19,7 @@ namespace ResumeAnalyzer.DTOs.Match
         public double MatchScore { get; set; }
 
         public string Status { get; set; } = string.Empty;
+
+        public string WorkflowStatus { get; set; } = string.Empty;
     }
 }

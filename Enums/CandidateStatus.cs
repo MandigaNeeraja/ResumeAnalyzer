@@ -2,10 +2,16 @@
 {
     public enum CandidateStatus
     {
-        Uploaded = 0,
-        Parsed = 1,
-        Shortlisted = 2,
-        Rejected = 3,
-        OnHold = 4,
+        Applied = 0,
+        HRScreening = 1,
+        SentToManager = 2,
+        InterviewScheduled = 3,
+        InterviewCompleted = 4,
+        TechnicalSelected = 5,
+        TechnicalRejected = 6,
+        Hired = 7,
+        Rejected = 8,
+        OnHold = 9,
+        Shortlisted = 10
     }
 }

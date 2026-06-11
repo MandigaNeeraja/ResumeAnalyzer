@@ -21,6 +21,13 @@ namespace ResumeAnalyzer.DTOs.Analytics
         public int Count { get; set; }
     }
 
+    public class MonthlyTrendDto
+    {
+        public string Month { get; set; } = string.Empty;
+
+        public double Value { get; set; }
+    }
+
     public class AnalyticsSummaryDto
     {
         public int TotalCandidates { get; set; }
@@ -30,6 +37,8 @@ namespace ResumeAnalyzer.DTOs.Analytics
         public int TotalMatches { get; set; }
 
         public int Shortlisted { get; set; }
+
+        public int OpenJobs { get; set; }
 
         public double AverageMatchScore { get; set; }
     }
@@ -42,6 +51,12 @@ namespace ResumeAnalyzer.DTOs.Analytics
 
         public List<StatusDistributionDto> StatusDistribution { get; set; } = new();
 
+        public List<StatusDistributionDto> GroupedStatusDistribution { get; set; } = new();
+
         public List<MonthlyCountDto> MonthlyApplications { get; set; } = new();
+
+        public List<MonthlyTrendDto> MonthlyMatchTrend { get; set; } = new();
+
+        public List<MonthlyCountDto> MonthlyHires { get; set; } = new();
     }
 }

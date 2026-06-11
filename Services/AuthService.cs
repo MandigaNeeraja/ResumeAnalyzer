@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using ResumeAnalyzer.Constants;
 using ResumeAnalyzer.Data;
 using ResumeAnalyzer.DTOs.Auth;
 using ResumeAnalyzer.Helpers;
@@ -35,12 +36,18 @@ namespace ResumeAnalyzer.Services
                 return "User already exists";
             }
 
+            var role = string.IsNullOrWhiteSpace(dto.Role) ? Roles.HR : dto.Role;
+            if (role is not (Roles.Admin or Roles.HR or Roles.Manager))
+            {
+                return "Role must be Admin, HR, or Manager";
+            }
+
             var user = new User
             {
                 Name = dto.Name,
                 Email = dto.Email,
                 PasswordHash = PasswordHasher.Hash(dto.Password),
-                Role = dto.Role
+                Role = role
             };
 
             _context.Users.Add(user);

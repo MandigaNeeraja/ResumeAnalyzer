@@ -8,6 +8,8 @@
 
         public string Phone { get; set; } = string.Empty;
 
+        public string? LinkedIn { get; set; }
+
         public string Education { get; set; } = string.Empty;
 
         public string CurrentDesignation { get; set; } = string.Empty;
